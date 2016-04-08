@@ -6,7 +6,7 @@ namespace ALDI
 {
     /// <summary>
     /// 上传下载FTP文件
-    /// copyright:  zac (suoxd123@126.com)
+    /// copyright:  Zac (suoxd123@126.com)
     /// </summary>
     public class FTP
     {
