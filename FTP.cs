@@ -4,6 +4,10 @@ using System.Net;
 
 namespace ALDI.Core
 {
+    /// <summary>
+    /// 上传下载FTP文件
+    /// copyright:  zac (suoxd123@126.com)
+    /// </summary>
     public class FTP
     {
         private readonly NetworkCredential _credential;
