@@ -4,11 +4,19 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Checksums;
 
-namespace ALDI.ZIP
+namespace ALDI
 {
-    class UseCase
+    /// <summary>
+    /// 上传下载FTP文件
+    /// copyright:  zac (suoxd123@126.com)
+    /// </summary>
+    public class ZIP
     {
-        static void Main(string[] args)
+
+        /// <summary>
+        /// 使用示例说明
+        /// </summary>
+        private void UserCase()
         {
             //Zip1();
             //Zip2();
@@ -17,7 +25,12 @@ namespace ALDI.ZIP
             //UnZip1();                     
         }
 
-        static void Zip()
+        #region 快速实现方法
+
+        /// <summary>
+        /// 压缩单个文件
+        /// </summary>
+        public void Zip()
         {
             ZipFile zipFile = ZipFile.Create("E:\\测试.ZIP");
             zipFile.BeginUpdate();
@@ -26,28 +39,45 @@ namespace ALDI.ZIP
             zipFile.CommitUpdate();
         }
 
-        static void ZipFolder()
+        /// <summary>
+        /// 压缩文件夹
+        /// </summary>
+        /// <param name="filterFile">排除文件</param>
+        public void ZipFolder(string filterFile)
         {
             FastZip zipFile = new FastZip();
-            zipFile.CreateZip("E:\\测试.ZIP", "E:\\test\\", true, "");
+            zipFile.CreateZip("E:\\测试.ZIP", "E:\\test\\", true, filterFile);
 
         }
 
-        static void UnZip()
+        /// <summary>
+        /// 解压文件到指定目录
+        /// </summary>
+        public void UnZip()
         {
             FastZip zipFile = new FastZip();
             zipFile.ExtractZip("E:\\测试.ZIP", "E:\\test\\", "");
         }
+        #endregion 
 
-        static void Zip1()
+        #region 
+
+        /// <summary>
+        /// 自己操作文件流的压缩方法
+        /// </summary>
+        public void Zip1()
         {
+            //写入的单个块大小
             int size = 512;
+
+            //生成压缩文件
             FileStream fs = File.Create("E:\\test1.ZIP");
             ZipOutputStream zipStream = new ZipOutputStream(fs);
 
             string[] fileList = { "E:\\file1.xlsx", "E:\\file2.txt" };
             foreach (string fileName in fileList)
             {
+                //依次将待压缩加入缓存
                 FileStream source = File.OpenRead(fileName);
                 ZipEntry zip = new ZipEntry(source.Name);
                 zip.DateTime = DateTime.Now;
@@ -56,7 +86,7 @@ namespace ALDI.ZIP
                 byte[] buffer = new byte[size];
                 int readIdx = 0, tmpRead;
                 while (readIdx < source.Length)
-                {
+                {//将单个文件按块加入压缩文件缓存
                     tmpRead = source.Read(buffer, 0, size);
                     zipStream.Write(buffer, 0, tmpRead);
                     readIdx += tmpRead;
@@ -67,27 +97,35 @@ namespace ALDI.ZIP
             zipStream.Close();
         }
 
-
-        static void UnZip1()
+        /// <summary>
+        /// 自己操作文件流的解压方法
+        /// </summary>
+        public void UnZip1()
         {
+            //读取的单个流大小（字节）
             int size = 512;
+
+            //创建解压目录
             string folder = "E:\\test\\";
             Directory.CreateDirectory(folder);
 
+            //读取待解压文件
             FileStream fs = File.OpenRead("E:\\test1.ZIP");
             ZipInputStream zipStream = new ZipInputStream(fs);
 
             ZipEntry zip = null;
             while ((zip = zipStream.GetNextEntry()) != null)
-            {
+            {//依次解压文件
                 string fileName = Path.GetFileName(zip.Name);
                 if (fileName.Equals(string.Empty))
-                {
+                {//对于目录则在本地创建目录
                     Directory.CreateDirectory(folder + zip.Name);
                     continue;
                 }
+                //对于文件则生成文件流
                 FileStream fsFile = File.Create(folder + zip.Name);
 
+                //将解压文件流按块写入文件
                 byte[] buffer = new byte[size];
                 int readIdx = 0, tmpRead;
                 while (readIdx < zip.Size)
@@ -102,9 +140,9 @@ namespace ALDI.ZIP
         }
 
         /// <summary>
-        /// 加参数
+        /// 自己操作文件流，同时增加参数设置的方法
         /// </summary>
-        static void Zip2()
+        public void Zip2()
         {
             FileStream fs = File.Create("E:\\test2.ZIP");
             ZipOutputStream zipStream = new ZipOutputStream(fs);
@@ -135,5 +173,6 @@ namespace ALDI.ZIP
             zipStream.Finish();
             zipStream.Close();
         }
+        #endregion 
     }
 }
