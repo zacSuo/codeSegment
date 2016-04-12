@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-//需要先引用ICSharpCode.SharpZipLib.DLL或ICSharpCode.SharpZipLib项目文件
+//需要先引用ICSharpCode.SharpZipLib.DLL或SharpZipLib项目文件
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Checksums;
 
@@ -28,7 +28,7 @@ namespace ALDI
         #region 快速实现方法
 
         /// <summary>
-        /// 压缩单个文件
+        /// 压缩文件
         /// </summary>
         public void Zip()
         {
@@ -37,6 +37,8 @@ namespace ALDI
             zipFile.Add("E:\\file1.xlsx");
             zipFile.Add("E:\\file2.txt");
             zipFile.CommitUpdate();
+
+            zipFile.Close();
         }
 
         /// <summary>
@@ -60,7 +62,7 @@ namespace ALDI
         }
         #endregion 
 
-        #region 
+        #region 自己设置缓存 来实现
 
         /// <summary>
         /// 自己操作文件流的压缩方法
