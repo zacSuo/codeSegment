@@ -9,22 +9,24 @@ namespace ALDI
     /// copyright:  Zac (suoxd123@126.com)
     /// </summary>
     public class Ini
-    {   
-    /// <summary>
-    /// [Info]
-    /// username=zac
-    /// password=zac321
-    /// </summary>
-        public void UserCase(){
+    {
+        /// <summary>
+        /// 当前目录下配置文件Config.ini格式
+        /// [Info]
+        /// username=zac
+        /// password=zac321
+        /// </summary>
+        public void UserCase()
+        {
             string fileName = Environment.CurrentDirectory + '\\' + "Config.ini";
 
             //读
-            string userName=ReadIniData("Info","username","testName",fileName);
-            string password = ReadIniData("Info","password","testPwd",fileName);
+            string userName = ReadIniData("Info", "username", "testName", fileName);
+            string password = ReadIniData("Info", "password", "testPwd", fileName);
 
             //写
             userName = userName + "123";
-            WriteIniData("Info","username",userName,fileName);
+            WriteIniData("Info", "username", userName, fileName);
 
         }
 
@@ -67,3 +69,4 @@ namespace ALDI
         #endregion
 
     }
+}
