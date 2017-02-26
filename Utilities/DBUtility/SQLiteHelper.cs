@@ -6,13 +6,13 @@ using System.IO;
 using System.Collections;
 using System.Data.SQLite;
 
-namespace DBUtility
+namespace SimuProteus
 {
     /// <summary>
     /// SQLiteHelper is a utility class similar to "SQLHelper" in MS
     /// Data Access Application Block and follows similar pattern.
     /// </summary>
-    public class SQLiteHelper
+    class SQLiteHelper
     {
         /// <summary>
         /// Creates a new <see cref="SQLiteHelper"/> instance. The ctor is marked private since all members are static.
@@ -73,6 +73,46 @@ namespace DBUtility
             parameter.Value = parameterValue;
             return parameter;
         }
+
+
+        #region UpdateDataset
+        /// <summary>
+        /// Executes the respective command for each inserted, updated, or deleted row in the DataSet.
+        /// </summary>
+        /// <remarks>
+        /// e.g.:  
+        ///  UpdateDataset(conn, insertCommand, deleteCommand, updateCommand, dataSet, "Order");
+        /// </remarks>
+        /// <param name="insertCommand">A valid SQL statement  to insert new records into the data source</param>
+        /// <param name="deleteCommand">A valid SQL statement to delete records from the data source</param>
+        /// <param name="updateCommand">A valid SQL statement used to update records in the data source</param>
+        /// <param name="dataSet">The DataSet used to update the data source</param>
+        /// <param name="tableName">The DataTable used to update the data source.</param>
+        public static void UpdateDataset(SQLiteCommand insertCommand, SQLiteCommand deleteCommand, SQLiteCommand updateCommand, DataSet dataSet, string tableName)
+        {
+            if (insertCommand == null) throw new ArgumentNullException("insertCommand");
+            if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
+            if (updateCommand == null) throw new ArgumentNullException("updateCommand");
+            if (tableName == null || tableName.Length == 0) throw new ArgumentNullException("tableName");
+
+            // Create a SQLiteDataAdapter, and dispose of it after we are done
+            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter())
+            {
+                // Set the data adapter commands
+                dataAdapter.UpdateCommand = updateCommand;
+                dataAdapter.InsertCommand = insertCommand;
+                dataAdapter.DeleteCommand = deleteCommand;
+
+                // Update the dataset changes in the data source
+                dataAdapter.Update(dataSet, tableName);
+
+                // Commit all the changes made to the DataSet
+                dataSet.AcceptChanges();
+            }
+        }
+        #endregion
+
+        #region Get Dataset
 
         /// <summary>
         /// Shortcut method to execute dataset from SQL Statement and object[] arrray of parameter values
@@ -135,7 +175,7 @@ namespace DBUtility
         /// </summary>
         /// <param name="cmd">Fully populated SQLiteCommand</param>
         /// <returns>DataSet</returns>
-        public static DataSet ExecuteDataset(SQLiteCommand cmd)
+        public static DataSet ExecuteDataSet(SQLiteCommand cmd)
         {
             if (cmd.Connection.State == ConnectionState.Closed)
                 cmd.Connection.Open();
@@ -156,7 +196,7 @@ namespace DBUtility
         /// <param name="commandParameters">Sqlite Command parameters.</param>
         /// <returns>DataSet</returns>
         /// <remarks>user must examine Transaction Object and handle transaction.connection .Close, etc.</remarks>
-        public static DataSet ExecuteDataset(SQLiteTransaction transaction, string commandText, params SQLiteParameter[] commandParameters)
+        public static DataSet ExecuteDataSet(SQLiteTransaction transaction, string commandText, params SQLiteParameter[] commandParameters)
         {
 
             if (transaction == null) throw new ArgumentNullException("transaction");
@@ -169,7 +209,7 @@ namespace DBUtility
             }
             if (transaction.Connection.State == ConnectionState.Closed)
                 transaction.Connection.Open();
-            DataSet ds = ExecuteDataset((SQLiteCommand)cmd);
+            DataSet ds = ExecuteDataSet((SQLiteCommand)cmd);
             return ds;
         }
 
@@ -181,7 +221,7 @@ namespace DBUtility
         /// <param name="commandParameters">object[] array of parameter values.</param>
         /// <returns>DataSet</returns>
         /// <remarks>user must examine Transaction Object and handle transaction.connection .Close, etc.</remarks>
-        public static DataSet ExecuteDataset(SQLiteTransaction transaction, string commandText, object[] commandParameters)
+        public static DataSet ExecuteDataSet(SQLiteTransaction transaction, string commandText, object[] commandParameters)
         {
 
             if (transaction == null) throw new ArgumentNullException("transaction");
@@ -192,49 +232,29 @@ namespace DBUtility
             if (transaction.Connection.State == ConnectionState.Closed)
                 transaction.Connection.Open();
 
-            DataSet ds = ExecuteDataset((SQLiteCommand)cmd);
+            DataSet ds = ExecuteDataSet((SQLiteCommand)cmd);
             return ds;
         }
 
-        #region UpdateDataset
         /// <summary>
-        /// Executes the respective command for each inserted, updated, or deleted row in the DataSet.
+        /// ShortCut method to return IDataReader
         /// </summary>
-        /// <remarks>
-        /// e.g.:  
-        ///  UpdateDataset(conn, insertCommand, deleteCommand, updateCommand, dataSet, "Order");
-        /// </remarks>
-        /// <param name="insertCommand">A valid SQL statement  to insert new records into the data source</param>
-        /// <param name="deleteCommand">A valid SQL statement to delete records from the data source</param>
-        /// <param name="updateCommand">A valid SQL statement used to update records in the data source</param>
-        /// <param name="dataSet">The DataSet used to update the data source</param>
-        /// <param name="tableName">The DataTable used to update the data source.</param>
-        public static void UpdateDataset(SQLiteCommand insertCommand, SQLiteCommand deleteCommand, SQLiteCommand updateCommand, DataSet dataSet, string tableName)
+        /// <param name="connectionString">SQLite Connection String</param>
+        /// <param name="commandText">Sql Statement with embedded "@param" style parameters</param>
+        /// <param name="paramList">object[] array of parameter values</param>
+        /// <returns></returns>
+        public static IDataReader ExecuteReader(string connectionString, string commandText, params object[] paramList)
         {
-            if (insertCommand == null) throw new ArgumentNullException("insertCommand");
-            if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
-            if (updateCommand == null) throw new ArgumentNullException("updateCommand");
-            if (tableName == null || tableName.Length == 0) throw new ArgumentNullException("tableName");
+            SQLiteConnection cn = new SQLiteConnection(connectionString);
+            SQLiteCommand cmd = cn.CreateCommand();
 
-            // Create a SQLiteDataAdapter, and dispose of it after we are done
-            using (SQLiteDataAdapter dataAdapter = new SQLiteDataAdapter())
-            {
-                // Set the data adapter commands
-                dataAdapter.UpdateCommand = updateCommand;
-                dataAdapter.InsertCommand = insertCommand;
-                dataAdapter.DeleteCommand = deleteCommand;
+            IDataReader rdr = ExecuteReader(cmd, commandText, paramList);
 
-                // Update the dataset changes in the data source
-                dataAdapter.Update(dataSet, tableName);
+            cmd.Dispose();
+            cn.Close();
 
-                // Commit all the changes made to the DataSet
-                dataSet.AcceptChanges();
-            }
+            return rdr;
         }
-        #endregion
-
-
-
 
         /// <summary>
         /// ShortCut method to return IDataReader
@@ -257,6 +277,9 @@ namespace DBUtility
             IDataReader rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             return rdr;
         }
+        #endregion 
+
+        #region Execute Command
 
         /// <summary>
         /// Shortcut to ExecuteNonQuery with SqlStatement and object[] param values
@@ -334,6 +357,7 @@ namespace DBUtility
             cmd.Dispose();
             return result;
         }
+        #endregion
 
         /// <summary>
         /// Shortcut to ExecuteScalar with Sql Statement embedded params and object[] param values
