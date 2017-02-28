@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Runtime.InteropServices;
 
 namespace ALDI
