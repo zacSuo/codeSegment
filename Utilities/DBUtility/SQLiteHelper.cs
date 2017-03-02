@@ -14,6 +14,22 @@ namespace SimuProteus
     /// </summary>
     class SQLiteHelper
     {
+        private static bool HasPwdFlag = false;
+        private static string Password = string.Empty;
+
+        public static void CreateDatabase(string strDb, string pwd)
+        {
+            SQLiteConnection.CreateFile(strDb);
+            SQLiteConnection conn = new SQLiteConnection(string.Format("Data Source={0};Version=3;",strDb));
+            conn.Open();
+            if (pwd != string.Empty)
+            {
+                HasPwdFlag = true;
+                Password = pwd;
+                conn.ChangePassword(pwd);
+            }
+        }
+
         /// <summary>
         /// Creates a new <see cref="SQLiteHelper"/> instance. The ctor is marked private since all members are static.
         /// </summary>
@@ -134,7 +150,10 @@ namespace SimuProteus
             }
             DataSet ds = new DataSet();
             if (cn.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cn.SetPassword(Password);
                 cn.Open();
+            }
             SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             da.Fill(ds);
             da.Dispose();
@@ -162,7 +181,10 @@ namespace SimuProteus
             }
             DataSet ds = new DataSet();
             if (cn.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cn.SetPassword(Password);
                 cn.Open();
+            }
             SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             da.Fill(ds);
             da.Dispose();
@@ -178,7 +200,10 @@ namespace SimuProteus
         public static DataSet ExecuteDataSet(SQLiteCommand cmd)
         {
             if (cmd.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cmd.Connection.SetPassword(Password);
                 cmd.Connection.Open();
+            }
             DataSet ds = new DataSet();
             SQLiteDataAdapter da = new SQLiteDataAdapter(cmd);
             da.Fill(ds);
@@ -208,7 +233,10 @@ namespace SimuProteus
                 cmd.Parameters.Add(parm);
             }
             if (transaction.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) transaction.Connection.SetPassword(Password);
                 transaction.Connection.Open();
+            }
             DataSet ds = ExecuteDataSet((SQLiteCommand)cmd);
             return ds;
         }
@@ -230,7 +258,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters((SQLiteCommand)cmd, cmd.CommandText, commandParameters);
             if (transaction.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) transaction.Connection.SetPassword(Password);
                 transaction.Connection.Open();
+            }
 
             DataSet ds = ExecuteDataSet((SQLiteCommand)cmd);
             return ds;
@@ -273,7 +304,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters(cmd, commandText, paramList);
             if (cmd.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cmd.Connection.SetPassword(Password);
                 cmd.Connection.Open();
+            }
             IDataReader rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
             return rdr;
         }
@@ -295,7 +329,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters(cmd, commandText, paramList);
             if (cn.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cn.SetPassword(Password);
                 cn.Open();
+            }
             int result = cmd.ExecuteNonQuery();
             cmd.Dispose();
             cn.Close();
@@ -312,7 +349,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters(cmd, commandText, paramList);
             if (cn.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cn.SetPassword(Password);
                 cn.Open();
+            }
             int result = cmd.ExecuteNonQuery();
             cmd.Dispose();
             cn.Close();
@@ -336,7 +376,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters((SQLiteCommand)cmd, cmd.CommandText, paramList);
             if (transaction.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) transaction.Connection.SetPassword(Password);
                 transaction.Connection.Open();
+            }
             int result = cmd.ExecuteNonQuery();
             cmd.Dispose();
             return result;
@@ -352,6 +395,7 @@ namespace SimuProteus
         {
             if (cmd.Connection.State == ConnectionState.Closed)
                 cmd.Connection.Open();
+
             int result = cmd.ExecuteNonQuery();
             cmd.Connection.Close();
             cmd.Dispose();
@@ -373,7 +417,10 @@ namespace SimuProteus
             cmd.CommandText = commandText;
             AttachParameters(cmd, commandText, paramList);
             if (cn.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cn.SetPassword(Password);
                 cn.Open();
+            }
             object result = cmd.ExecuteScalar();
             cmd.Dispose();
             cn.Close();

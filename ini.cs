@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace ALDI
+namespace SimuProteus
 {
     /// <summary>
     /// 读写Ini配置文件
@@ -11,26 +11,17 @@ namespace ALDI
     /// </summary>
     public class Ini
     {
-        /// <summary>
-        /// 当前目录下配置文件Config.ini格式
-        /// [Info]
-        /// username=zac
-        /// password=zac321
-        /// </summary>
-        public void UserCase()
+        private static string fileName = Constants.CurrentDirectory + '\\' + "Config.ini";
+        
+        public static string GetItemValue(string strSection, string strKey)
         {
-            string fileName = Environment.CurrentDirectory + '\\' + "Config.ini";
-
-            //读
-            string userName = ReadIniData("Info", "username", "testName", fileName);
-            string password = ReadIniData("Info", "password", "testPwd", fileName);
-
-            //写
-            userName = userName + "123";
-            WriteIniData("Info", "username", userName, fileName);
-
+            return ReadIniData(strSection, strKey, "", fileName);
         }
 
+        public static bool SetItemValue(string strSection, string strKey, string strValue)
+        {
+            return WriteIniData(strSection, strKey, strValue, fileName);
+        }
 
         #region API函数声明
 
@@ -61,8 +52,6 @@ namespace ALDI
             if (!File.Exists(iniFilePath)) return false;
 
             long OpStation = WritePrivateProfileString(Section, Key, Value, iniFilePath);
-            //string strLog = string.Format("修改功能名称：板号[{0}]-序号[{1}]-名称[{2}],\t结果：{3}", Section, Key, Value, OpStation != 0);
-            //Log.WriteLog(strLog);
 
             return OpStation == 0 ? false : true;
         }
