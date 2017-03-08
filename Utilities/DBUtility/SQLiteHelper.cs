@@ -17,16 +17,30 @@ namespace SimuProteus
         private static bool HasPwdFlag = false;
         private static string Password = string.Empty;
 
-        public static void CreateDatabase(string strDb, string pwd)
+        public static bool SetPassWordFlag
+        {
+            set
+            {
+                HasPwdFlag = value;
+            }
+        }
+
+        public static string SetSignature
+        {
+            set
+            {
+                Password = value; ;
+            }
+        }
+
+        public static void CreateDatabase(string strDb)
         {
             SQLiteConnection.CreateFile(strDb);
             SQLiteConnection conn = new SQLiteConnection(string.Format("Data Source={0};Version=3;",strDb));
             conn.Open();
-            if (pwd != string.Empty)
+            if (HasPwdFlag)
             {
-                HasPwdFlag = true;
-                Password = pwd;
-                conn.ChangePassword(pwd);
+                conn.ChangePassword(Password);
             }
         }
 
