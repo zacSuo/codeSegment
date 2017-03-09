@@ -1,12 +1,7 @@
-﻿/** 1. 功能：处理数据类型转换，数制转换、编码转换相关的类
- *  2. 作者：周兆坤 
- *  3. 创建日期：2010-3-19
- *  4. 最后修改日期：2010-3-19
-**/
-using System;
+﻿using System;
 using System.Text;
 
-namespace DotNet.Utilities
+namespace PcVedio
 {
     /// <summary>
     /// 处理数据类型转换，数制转换、编码转换相关的类
@@ -114,7 +109,18 @@ namespace DotNet.Utilities
         /// 将byte[]转换成int
         /// </summary>
         /// <param name="data">需要转换成整数的byte数组</param>
-        public static int BytesToInt32(byte[] data)
+        public static int BytesToInt32(byte[] data, bool lowBefore)
+        {
+            return BytesToInt32(data, 0, lowBefore);
+        }
+
+
+        /// <summary>
+        /// 将byte[]转换成int
+        /// </summary>
+        /// <param name="data">需要转换成整数的byte数组</param>
+        /// <param name="start">起始位置</param>
+        public static int BytesToInt32(byte[] data, int start, bool lowBefore)
         {
             //如果传入的字节数组长度小于4,则返回0
             if (data.Length < 4)
@@ -132,7 +138,10 @@ namespace DotNet.Utilities
                 byte[] tempBuffer = new byte[4];
 
                 //将传入的字节数组的前4个字节复制到临时缓冲区
-                Buffer.BlockCopy(data, 0, tempBuffer, 0, 4);
+                Buffer.BlockCopy(data, start, tempBuffer, 0, 4);
+
+                if (lowBefore)
+                    Array.Reverse(tempBuffer);
 
                 //将临时缓冲区的值转换成整数，并赋给num
                 num = BitConverter.ToInt32(tempBuffer, 0);
@@ -141,8 +150,48 @@ namespace DotNet.Utilities
             //返回整数
             return num;
         }
-        #endregion
 
+
+
+        /// <summary>
+        /// 将byte[]转换成Short
+        /// </summary>
+        /// <param name="data">需要转换成整数的byte数组</param>
+        /// <param name="start">起始位置</param>
+        public static int BytesToInt16(byte[] data, int start, bool lowBefore)
+        {
+            //如果传入的字节数组长度小于4,则返回0
+            if (data.Length < 2)
+            {
+                return 0;
+            }
+
+            //定义要返回的整数
+            int num = data[start];
+
+            if (lowBefore)
+            {
+                num |= (data[start + 1] << 8);
+            }
+            else
+            {
+                num <<= 8;
+                num |= data[start + 1];
+            }
+
+            //返回整数
+            return num;
+        }
+
+        /// <summary>
+        /// 将byte[]转换成Short
+        /// </summary>
+        /// <param name="data">需要转换成整数的byte数组</param>
+        public static int BytesToInt16(byte[] data, bool lowBefore)
+        {
+            return BytesToInt16(data, 0, lowBefore);
+        }
+        #endregion
 
         #region int 转为 byte[]
         /// <summary>
@@ -156,12 +205,35 @@ namespace DotNet.Utilities
             byte[] buff = new byte[4];
             for (int i = 0; i < 4; i++)
             {
-                buff[i] = (byte)(data & 255);
+                buff[i] = (byte)(data & 0xFF);
                 data >>= 8;
             }
 
             if (!lowBefore)
                 Array.Reverse(buff);
+
+            return buff;
+        }
+        #endregion
+
+        #region int 转为 byte[]
+        /// <summary>
+        /// int 转为 byte[]
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="lowBefore">是否低位在前</param>
+        /// <returns></returns>
+        public static byte[] Int16ToBytes(int data, bool lowBefore)
+        {
+            byte[] buff = new byte[2];
+            int i=0, j=1;
+            if (!lowBefore)
+            {
+                i = 1;
+                j = 0;
+            }
+            buff[i] = (byte)(data & 0xFF);
+            buff[j] = (byte)((data >> 8) & 0xFF);
 
             return buff;
         }

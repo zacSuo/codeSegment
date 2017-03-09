@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Net.Mail;
 using System.Net;
 
-namespace DotNet.Utilities
+namespace PcVedio
 {
     /// <summary>
     /// 网络操作相关的类
@@ -101,17 +101,22 @@ namespace DotNet.Utilities
         {
             get
             {
+                string strIP = string.Empty;
                 //获取本机的IP列表,IP列表中的第一项是局域网IP，第二项是广域网IP
                 IPAddress[] addressList = Dns.GetHostEntry(Dns.GetHostName()).AddressList;
 
-                //如果本机IP列表为空，则返回空字符串
-                if (addressList.Length < 1)
+                if (addressList.Length > 0)
                 {
-                    return "";
+                    int ipIdx = 0;
+                    if (addressList.Length == 2 && addressList[0].IsIPv6LinkLocal)
+                    {
+                        ipIdx = 1;
+                    }
+                    strIP = addressList[ipIdx].ToString();
                 }
 
                 //返回本机的局域网IP
-                return addressList[0].ToString();
+                return strIP;
             }
         }
         #endregion
