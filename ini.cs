@@ -11,7 +11,7 @@ namespace SimuProteus
     /// </summary>
     public class Ini
     {
-        private static string fileName = Constants.CurrentDirectory + '\\' + "Config.ini";
+        private static string fileName = System.Environment.CurrentDirectory + '\\' + "Config.ini";
         
         public static string GetItemValue(string strSection, string strKey)
         {
