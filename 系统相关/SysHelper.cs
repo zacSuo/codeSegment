@@ -21,9 +21,7 @@ namespace DotNet.Utilities
             return HttpContext.Current.Server.MapPath(virtualPath);
 
         }
-        #endregion
-
-       
+        #endregion       
 
         #region 获取指定调用层级的方法名
         /// <summary>
@@ -78,7 +76,5 @@ namespace DotNet.Utilities
             }
         }
         #endregion
-
-
     }
 }

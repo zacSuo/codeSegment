@@ -29,6 +29,62 @@ namespace DotNet.Utilities
             return Regex.IsMatch(input, pattern, options);
         }
         #endregion
+
+        #region 返回匹配结果
+        /// <summary>
+        /// 匹配到的多项
+        /// </summary>
+        /// <param name="input">待验证字符串</param>
+        /// <param name="pattern">匹配模式</param>
+        /// <param name="strStart">匹配项的起始标志</param>
+        /// <param name="strEnd">匹配项的结束标志</param>
+        /// <param name="result">匹配结果</param>
+        public static void GetMatchList(string input,string pattern, string strStart,string strEnd, List<string> result)
+        {
+            if (result == null)
+                result = new List<string>();
+            
+            if (!IsMatch(input, pattern)) return;
+
+            int startIdx = 0, endIdx = 0;
+            Regex regex = new Regex(pattern);
+            MatchCollection matchList = regex.Matches(strHtml);
+            foreach (Match item in matchList)
+            {
+                startIdx = item.Value.IndexOf(strStart);
+                endIdx = item.Value.LastIndexOf(strEnd);
+                result.Add(item.Value.Substring(startIdx + strStart.Length + 1, endIdx - startIdx - strStart.Length - 2));
+            }
+        }
+
+        /// <summary>
+        /// 匹配特定内容
+        /// </summary>
+        /// <param name="input">待验证字符串</param>
+        /// <param name="pattern">匹配模式</param>
+        /// <param name="strStart">匹配项的起始标志</param>
+        /// <param name="strEnd">匹配项的结束标志</param>
+        /// <returns>匹配结果</returns>
+        public static string GetMatchItem(string input, string pattern, string strStart, string strEnd)
+        {
+            string result = string.Empty;
+
+            if(!IsMatch(input,pattern)) return result;
+
+            int startIdx = 0, endIdx = 0;
+            Regex regex = new Regex(pattern);
+            Match matchInfo = regex.Match(input);
+            startIdx = matchInfo.Value.IndexOf(strStart);
+            endIdx = matchInfo.Value.IndexOf(strEnd);
+
+            result = matchInfo.Value.Substring(startIdx + strStart.Length + 1, endIdx - startIdx - strStart.Length - 2);
+
+            return result;
+        }
+
+        #endregion
+
+        #region 各类常用格式验证
         /// <summary>
         /// 中文字符
         /// </summary>
@@ -195,5 +251,6 @@ namespace DotNet.Utilities
             string strPattern = string.Format(@"\d{{0},{1}}$", min, max);
             return IsMatch(input, strPattern);
         }
+        #endregion
     }
 }
