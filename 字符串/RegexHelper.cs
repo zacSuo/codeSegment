@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-namespace DotNet.Utilities
+namespace Core
 {
     /// <summary>
     /// 操作正则表达式的公共类
@@ -48,7 +49,7 @@ namespace DotNet.Utilities
 
             int startIdx = 0, endIdx = 0;
             Regex regex = new Regex(pattern);
-            MatchCollection matchList = regex.Matches(strHtml);
+            MatchCollection matchList = regex.Matches(input);
             foreach (Match item in matchList)
             {
                 startIdx = item.Value.IndexOf(strStart);
@@ -214,6 +215,17 @@ namespace DotNet.Utilities
         public static bool IsValidNumber(string input)
         {
             string strPattern = @"^[0-9]*$";
+            return IsMatch(input, strPattern);
+        }
+
+        /// <summary>
+        /// 正实数（正浮点数）
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static bool IsUnsignedRealNumber(string input)
+        {
+            string strPattern = @"^\d+(\.\d{1,2})?$";
             return IsMatch(input, strPattern);
         }
 

@@ -405,10 +405,13 @@ namespace SimuProteus
         /// </summary>
         /// <param name="cmd">CMD.</param>
         /// <returns></returns>
-        public static int ExecuteNonQuery(IDbCommand cmd)
+        public static int ExecuteNonQuery(SQLiteCommand cmd)
         {
             if (cmd.Connection.State == ConnectionState.Closed)
+            {
+                if (HasPwdFlag) cmd.Connection.SetPassword(Password);
                 cmd.Connection.Open();
+            }
 
             int result = cmd.ExecuteNonQuery();
             cmd.Connection.Close();
@@ -595,7 +598,7 @@ namespace SimuProteus
         /// <param name="command">Command.</param>
         /// <param name="dataRow">Data row.</param>
         /// <returns>Integer result code</returns>
-        public static int ExecuteNonQueryTypedParams(IDbCommand command, DataRow dataRow)
+        public static int ExecuteNonQueryTypedParams(SQLiteCommand command, DataRow dataRow)
         {
             int retVal = 0;
 
