@@ -7,23 +7,10 @@ namespace DotNet.Utilities
 {
     /// <summary>
     /// 字符串操作类
-    /// 1、GetStrArray(string str, char speater, bool toLower)  把字符串按照分隔符转换成 List
-    /// 2、GetStrArray(string str) 把字符串转 按照, 分割 换为数据
-    /// 3、GetArrayStr(List list, string speater) 把 List 按照分隔符组装成 string
-    /// 4、GetArrayStr(List list)  得到数组列表以逗号分隔的字符串
-    /// 5、GetArrayValueStr(Dictionary<int, int> list)得到数组列表以逗号分隔的字符串
-    /// 6、DelLastComma(string str)删除最后结尾的一个逗号
-    /// 7、DelLastChar(string str, string strchar)删除最后结尾的指定字符后的字符
-    /// 8、ToSBC(string input)转全角的函数(SBC case)
-    /// 9、ToDBC(string input)转半角的函数(SBC case)
-    /// 10、GetSubStringList(string o_str, char sepeater)把字符串按照指定分隔符装成 List 去除重复
-    /// 11、GetCleanStyle(string StrList, string SplitString)将字符串样式转换为纯字符串
-    /// 12、GetNewStyle(string StrList, string NewStyle, string SplitString, out string Error)将字符串转换为新样式
-    /// 13、SplitMulti(string str, string splitstr)分割字符串
-    /// 14、SqlSafeString(string String, bool IsDel)
     /// </summary>
     public class StringHelper
     {
+        #region 分割字符串
         /// <summary>
         /// 把字符串按照分隔符转换成 List
         /// </summary>
@@ -58,6 +45,43 @@ namespace DotNet.Utilities
         {
             return str.Split(new Char[] { ',' });
         }
+        /// <summary>
+        /// 把字符串按照指定分隔符装成 List 去除重复
+        /// </summary>
+        /// <param name="o_str"></param>
+        /// <param name="sepeater"></param>
+        /// <returns></returns>
+        public static List<string> GetSubStringList(string o_str, char sepeater)
+        {
+            List<string> list = new List<string>();
+            string[] ss = o_str.Split(sepeater);
+            foreach (string s in ss)
+            {
+                if (!string.IsNullOrEmpty(s) && s != sepeater.ToString())
+                {
+                    list.Add(s);
+                }
+            }
+            return list;
+        }
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="splitstr"></param>
+        /// <returns></returns>
+        public static string[] SplitMulti(string str, string splitstr)
+        {
+            string[] strArray = null;
+            if ((str != null) && (str != ""))
+            {
+                strArray = new Regex(splitstr).Split(str);
+            }
+            return strArray;
+        }
+        #endregion
+
+        #region 合并字符串
         /// <summary>
         /// 把 List<string> 按照分隔符组装成 string
         /// </summary>
@@ -124,7 +148,7 @@ namespace DotNet.Utilities
                 return "";
             }
         }
-
+        #endregion
 
         #region 删除最后一个字符之后的字符
 
@@ -145,10 +169,8 @@ namespace DotNet.Utilities
         }
 
         #endregion
-
-
-
-
+        
+        #region 半角全角
         /// <summary>
         /// 转全角的函数(SBC case)
         /// </summary>
@@ -191,27 +213,7 @@ namespace DotNet.Utilities
             }
             return new string(c);
         }
-
-        /// <summary>
-        /// 把字符串按照指定分隔符装成 List 去除重复
-        /// </summary>
-        /// <param name="o_str"></param>
-        /// <param name="sepeater"></param>
-        /// <returns></returns>
-        public static List<string> GetSubStringList(string o_str, char sepeater)
-        {
-            List<string> list = new List<string>();
-            string[] ss = o_str.Split(sepeater);
-            foreach (string s in ss)
-            {
-                if (!string.IsNullOrEmpty(s) && s != sepeater.ToString())
-                {
-                    list.Add(s);
-                }
-            }
-            return list;
-        }
-
+        #endregion 
 
         #region 将字符串样式转换为纯字符串
         /// <summary>
@@ -298,21 +300,7 @@ namespace DotNet.Utilities
         }
         #endregion
 
-        /// <summary>
-        /// 分割字符串
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="splitstr"></param>
-        /// <returns></returns>
-        public static string[] SplitMulti(string str, string splitstr)
-        {
-            string[] strArray = null;
-            if ((str != null) && (str != ""))
-            {
-                strArray = new Regex(splitstr).Split(str);
-            }
-            return strArray;
-        }
+        #region Sql过滤
         public static string SqlSafeString(string String, bool IsDel)
         {
             if (IsDel)
@@ -325,6 +313,7 @@ namespace DotNet.Utilities
             String = String.Replace("\"", "&#34;");
             return String;
         }
+        #endregion
 
         #region 获取正确的Id，如果不是正整数，返回0
         /// <summary>
@@ -334,43 +323,13 @@ namespace DotNet.Utilities
         /// <returns>返回正确的整数ID，失败返回0</returns>
         public static int StrToId(string _value)
         {
-            if (IsNumberId(_value))
+            if (RegexHelper.IsNumberUnsignedinteger(_value))
                 return int.Parse(_value);
             else
                 return 0;
         }
         #endregion
-        #region 检查一个字符串是否是纯数字构成的，一般用于查询字符串参数的有效性验证。
-        /// <summary>
-        /// 检查一个字符串是否是纯数字构成的，一般用于查询字符串参数的有效性验证。(0除外)
-        /// </summary>
-        /// <param name="_value">需验证的字符串。。</param>
-        /// <returns>是否合法的bool值。</returns>
-        public static bool IsNumberId(string _value)
-        {
-            return QuickValidate("^[1-9]*[0-9]*$", _value);
-        }
-        #endregion
-        #region 快速验证一个字符串是否符合指定的正则表达式。
-        /// <summary>
-        /// 快速验证一个字符串是否符合指定的正则表达式。
-        /// </summary>
-        /// <param name="_express">正则表达式的内容。</param>
-        /// <param name="_value">需验证的字符串。</param>
-        /// <returns>是否合法的bool值。</returns>
-        public static bool QuickValidate(string _express, string _value)
-        {
-            if (_value == null) return false;
-            Regex myRegex = new Regex(_express);
-            if (_value.Length == 0)
-            {
-                return false;
-            }
-            return myRegex.IsMatch(_value);
-        }
-        #endregion
-
-
+        
         #region 根据配置对指定字符串进行 MD5 加密
         /// <summary>
         /// 根据配置对指定字符串进行 MD5 加密
@@ -453,8 +412,6 @@ namespace DotNet.Utilities
             return tempString;
         }
         #endregion
-
-
 
         #region HTML转行成TEXT
         /// <summary>

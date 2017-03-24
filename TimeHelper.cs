@@ -8,6 +8,7 @@ namespace DotNet.Utilities
     /// </summary>
     public class TimeHelper
     {
+        #region 格式化输出时间
         /// <summary>
         /// 将时间格式化成 年月日 的形式,如果时间为null，返回当前系统时间
         /// </summary>
@@ -43,6 +44,9 @@ namespace DotNet.Utilities
                 return GetFormatDate(DateTime.Now, Separator);
             }
         }
+        #endregion
+
+        #region 时间单位转换
         /// <summary>
         /// 把秒转换成分钟
         /// </summary>
@@ -52,8 +56,9 @@ namespace DotNet.Utilities
             decimal mm = (decimal)((decimal)Second / (decimal)60);
             return Convert.ToInt32(Math.Ceiling(mm));
         }
+        #endregion
 
-        #region 返回某年某月最后一天
+        #region 返回最后一天
         /// <summary>
         /// 返回某年某月最后一天
         /// </summary>
@@ -65,6 +70,55 @@ namespace DotNet.Utilities
             DateTime lastDay = new DateTime(year, month, new System.Globalization.GregorianCalendar().GetDaysInMonth(year, month));
             int Day = lastDay.Day;
             return Day;
+        }
+
+
+        /// <summary>
+        /// 返回每月的第一天和最后一天
+        /// </summary>
+        /// <param name="month"></param>
+        /// <param name="firstDay"></param>
+        /// <param name="lastDay"></param>
+        public static void ReturnDateFormat(int month, out string firstDay, out string lastDay)
+        {
+            int year = DateTime.Now.Year + month / 12;
+            if (month != 12)
+            {
+                month = month % 12;
+            }
+            switch (month)
+            {
+                case 2:
+                    firstDay = DateTime.Now.ToString(year + "-0" + month + "-01");
+                    if (DateTime.IsLeapYear(DateTime.Now.Year))
+                        lastDay = DateTime.Now.ToString(year + "-0" + month + "-29");
+                    else
+                        lastDay = DateTime.Now.ToString(year + "-0" + month + "-28");
+                    break;
+                    firstDay = DateTime.Now.ToString(year + "-0" + month + "-01");
+                    lastDay = DateTime.Now.ToString("yyyy-0" + month + "-31");
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    firstDay = DateTime.Now.ToString(year + "-0" + month + "-01");
+                    lastDay = DateTime.Now.ToString(year + "-0" + month + "-30");
+                    break;
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                    firstDay = DateTime.Now.ToString(year + "-0" + month + "-01");
+                    lastDay = DateTime.Now.ToString(year + "-0" + month + "-31");
+                    break;
+                default:
+                    firstDay = DateTime.Now.ToString(year + "-" + month + "-01");
+                    lastDay = DateTime.Now.ToString(year + "-" + month + "-31");
+                    break;
+            }
         }
         #endregion
 

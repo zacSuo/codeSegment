@@ -84,7 +84,7 @@ namespace DotNet.Utilities
 
         #endregion
 
-        #region 各类常用格式验证
+        #region 常用格式验证
         /// <summary>
         /// 中文字符
         /// </summary>
