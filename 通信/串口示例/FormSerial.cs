@@ -30,7 +30,7 @@ namespace SimuProteus
 
         private void InitialSeiralInfo()
         {
-            this.serialInfo = new DBUtility().GetSerialInfo();
+            this.serialInfo = new DBUtility(true).GetSerialInfo();
             this.btnFresh_Click(null, null);
 
             //用配置中的连接信息初始化界面展示
@@ -73,19 +73,20 @@ namespace SimuProteus
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            string strInfo = this.tbSend.Text.Trim().ToLower();
+            string strInfo = this.tbSend.Text.Trim();
             byte[] buff = null;
             int count = 0;
 
             if (rbHex.Checked)
             {
-                buff = new byte[strInfo.Length];
+                buff = new byte[strInfo.Length / 2];
+                strInfo = strInfo.ToLower();
                 count = this.CodeContentByHex(buff, strInfo);
                 strInfo = this.DecodeByHex(buff, count);
             }
             else
             {
-                buff = new byte[strInfo.Length * 2];
+                buff = new byte[strInfo.Length];
                 this.CodeContentByAscii(buff, strInfo);
                 count = buff.Length;
                 strInfo = this.DecodeByAscii(buff, count);
@@ -222,33 +223,40 @@ namespace SimuProteus
         {
             for (int i = 0; i < content.Length; i++)
             {
-                buff[i * 2] = (byte)((content[i] & 0X0F0) >> 4);
-                buff[i * 2 + 1] = (byte)((content[i] & 0X0F));
+                buff[i] = (byte)(content[i]);
             }
         }
 
         private int CodeContentByHex(byte[] buff, string content)
         {
-            int k = 0;
-            for (int i = 0; i < content.Length; i++)
+            int k = 0,high,low;
+            for (int i = 0; i+1 < content.Length; i+=2)
             {
-                if (content[i] == ' ') continue;
-
-                buff[k++] = (byte)(content[i] > '9' ? content[i] - 'a' + 10 : content[i] - '0');
+                while (i + 1 < content.Length && content[i] == ' ') i++;
+                if (i + 1 >= content.Length) break;
+                high = char2int(content[i]);
+                low =  char2int(content[i+1]);
+                buff[k++] = (byte)((high << 4) & 0X0F0 | low);
             }
             return k;
+        }
+
+        private int char2int(char pc)
+        {
+            return pc > '9' ? pc - 'a' + 10 : pc - '0';
+        }
+
+        private char int2char(int pi)
+        {
+            return (char)(pi > 9 ? pi + 'A' - 10 : pi + '0');
         }
 
         private string DecodeByAscii(byte[] buff, int count)
         {
             StringBuilder sbTmp = new StringBuilder();
-            for (int i = 0; i + 1 < count; i += 2)
+            for (int i = 0; i < count; i ++)
             {
-                sbTmp.Append((char)((buff[i] << 4) & 0X0F0 | buff[i + 1] & 0X0F));
-            }
-            if (count % 2 > 0)
-            {
-                sbTmp.Append((char)buff[count - 1]);
+                sbTmp.Append((char)buff[i]);
             }
             return sbTmp.ToString();
         }
@@ -258,16 +266,9 @@ namespace SimuProteus
             StringBuilder sbTmp = new StringBuilder();
             for (int i = 0; i < count; i++)
             {
-                sbTmp.Append((char)(buff[i] > 9 ? buff[i] - 10 + 'A' : buff[i] + '0'));
-            }
-            if (count % 2 > 0)
-            {
-                sbTmp.Append('0');
-            }
-
-            for (int i = sbTmp.Length; i > 0; i -= 2)
-            {
-                sbTmp.Insert(i, ' ');
+                sbTmp.Append(int2char(buff[i] >> 4));
+                sbTmp.Append(int2char(buff[i] & 0X0F));
+                sbTmp.Append(' ');
             }
             return sbTmp.ToString();
         }
