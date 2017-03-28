@@ -52,6 +52,7 @@
             this.btnFresh = new System.Windows.Forms.Button();
             this.cbBaudrate = new System.Windows.Forms.ComboBox();
             this.cbPorts = new System.Windows.Forms.ComboBox();
+            this.btnClearHistory = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +72,7 @@
             this.tbSend.Name = "tbSend";
             this.tbSend.Size = new System.Drawing.Size(684, 124);
             this.tbSend.TabIndex = 2;
-            this.tbSend.Text = "ab00fef";
+            this.tbSend.Text = "AB 00 fe f";
             // 
             // label2
             // 
@@ -183,11 +184,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(-20, 209);
+            this.label6.Location = new System.Drawing.Point(10, 209);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 15);
+            this.label6.Size = new System.Drawing.Size(83, 15);
             this.label6.TabIndex = 69;
-            this.label6.Text = "超时时间（ms）";
+            this.label6.Text = "超时（ms）";
             // 
             // label5
             // 
@@ -291,11 +292,22 @@
             this.cbPorts.Size = new System.Drawing.Size(100, 23);
             this.cbPorts.TabIndex = 63;
             // 
+            // btnClearHistory
+            // 
+            this.btnClearHistory.Location = new System.Drawing.Point(792, 6);
+            this.btnClearHistory.Name = "btnClearHistory";
+            this.btnClearHistory.Size = new System.Drawing.Size(97, 23);
+            this.btnClearHistory.TabIndex = 77;
+            this.btnClearHistory.Text = "清空记录";
+            this.btnClearHistory.UseVisualStyleBackColor = true;
+            this.btnClearHistory.Click += new System.EventHandler(this.btnClearHistory_Click);
+            // 
             // FormSerial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(901, 498);
+            this.Controls.Add(this.btnClearHistory);
             this.Controls.Add(this.cbParity);
             this.Controls.Add(this.cbStopbits);
             this.Controls.Add(this.tbTimeout);
@@ -318,6 +330,8 @@
             this.Controls.Add(this.tbSend);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximumSize = new System.Drawing.Size(919, 563);
+            this.MinimumSize = new System.Drawing.Size(919, 543);
             this.Name = "FormSerial";
             this.Text = "串口调试";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormSerial_FormClosed);
@@ -353,5 +367,6 @@
         private System.Windows.Forms.Button btnFresh;
         private System.Windows.Forms.ComboBox cbBaudrate;
         private System.Windows.Forms.ComboBox cbPorts;
+        private System.Windows.Forms.Button btnClearHistory;
     }
 }

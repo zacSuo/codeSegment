@@ -30,6 +30,7 @@ namespace SimuProteus
             this.cbStopbits.SelectedIndex = this.serialInfo.StopBits;
             this.tbTimeout.Text = this.serialInfo.TimeOut.ToString();
             this.cbBaudrate.SelectedIndex = this.serialInfo.BaudRate;
+            this.btnFresh_Click(null, null);
         }
 
         private void GetCurrentInfo()
