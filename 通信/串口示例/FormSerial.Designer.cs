@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSerial));
             this.label1 = new System.Windows.Forms.Label();
             this.tbSend = new System.Windows.Forms.TextBox();
@@ -53,7 +54,12 @@
             this.cbBaudrate = new System.Windows.Forms.ComboBox();
             this.cbPorts = new System.Windows.Forms.ComboBox();
             this.btnClearHistory = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbSendTimer = new System.Windows.Forms.CheckBox();
+            this.tbSendTimer = new System.Windows.Forms.TextBox();
+            this.timerSend = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -138,7 +144,7 @@
             // 
             this.groupBox1.Controls.Add(this.rbAssic);
             this.groupBox1.Controls.Add(this.rbHex);
-            this.groupBox1.Location = new System.Drawing.Point(3, 358);
+            this.groupBox1.Location = new System.Drawing.Point(2, 294);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 100);
             this.groupBox1.TabIndex = 61;
@@ -302,11 +308,45 @@
             this.btnClearHistory.UseVisualStyleBackColor = true;
             this.btnClearHistory.Click += new System.EventHandler(this.btnClearHistory_Click);
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.tbSendTimer);
+            this.groupBox2.Controls.Add(this.cbSendTimer);
+            this.groupBox2.Location = new System.Drawing.Point(2, 400);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(197, 58);
+            this.groupBox2.TabIndex = 78;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "定时发送(毫秒)";
+            // 
+            // cbSendTimer
+            // 
+            this.cbSendTimer.AutoSize = true;
+            this.cbSendTimer.Location = new System.Drawing.Point(27, 24);
+            this.cbSendTimer.Name = "cbSendTimer";
+            this.cbSendTimer.Size = new System.Drawing.Size(18, 17);
+            this.cbSendTimer.TabIndex = 0;
+            this.cbSendTimer.UseVisualStyleBackColor = true;
+            this.cbSendTimer.CheckedChanged += new System.EventHandler(this.cbSendTimer_CheckedChanged);
+            // 
+            // tbSendTimer
+            // 
+            this.tbSendTimer.Location = new System.Drawing.Point(68, 21);
+            this.tbSendTimer.Name = "tbSendTimer";
+            this.tbSendTimer.Size = new System.Drawing.Size(100, 25);
+            this.tbSendTimer.TabIndex = 1;
+            this.tbSendTimer.Text = "1000";
+            // 
+            // timerSend
+            // 
+            this.timerSend.Tick += new System.EventHandler(this.timerSend_Tick);
+            // 
             // FormSerial
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(901, 498);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnClearHistory);
             this.Controls.Add(this.cbParity);
             this.Controls.Add(this.cbStopbits);
@@ -337,6 +377,8 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormSerial_FormClosed);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -368,5 +410,9 @@
         private System.Windows.Forms.ComboBox cbBaudrate;
         private System.Windows.Forms.ComboBox cbPorts;
         private System.Windows.Forms.Button btnClearHistory;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox cbSendTimer;
+        private System.Windows.Forms.TextBox tbSendTimer;
+        private System.Windows.Forms.Timer timerSend;
     }
 }

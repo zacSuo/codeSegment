@@ -128,6 +128,7 @@ namespace SimuProteus
         {
             if (this.btnConnect.Text == "断开")
             {
+                this.cbSendTimer.Checked = false;
                 this.CloseSeiral();
                 this.DisableSendComponent(true);
                 return;
@@ -184,6 +185,17 @@ namespace SimuProteus
             this.rtbHistory.SelectionLength = 0;
             this.rtbHistory.Focus();
             //this.rtbHistory.ScrollToCaret();
+        }
+
+        private void cbSendTimer_CheckedChanged(object sender, EventArgs e)
+        {
+            this.timerSend.Interval = Convert.ToInt32(this.tbSendTimer.Text);
+            this.timerSend.Enabled = (sender as CheckBox).Checked;
+        }
+
+        private void timerSend_Tick(object sender, EventArgs e)
+        {
+            this.btnSend_Click(null, null);
         }
 
         #endregion
