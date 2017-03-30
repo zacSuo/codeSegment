@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Core
 {
@@ -14,6 +15,17 @@ namespace Core
             {
                 return Environment.Is64BitOperatingSystem;
             }
+        }
+
+        /// <summary>
+        /// 获取操作系统的语言
+        /// </summary>
+        /// <returns></returns>
+        public static string GetSystemLang()
+        {
+            InputLanguage currentLanguage = InputLanguage.DefaultInputLanguage;
+            CultureInfo cultureInfo = currentLanguage.Culture;
+            return cultureInfo.ToString();
         }
 
         [DllImport("user32.dll", EntryPoint = "ExitWindowsEx", CharSet = CharSet.Ansi)]
