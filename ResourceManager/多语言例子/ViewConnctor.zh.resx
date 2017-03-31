@@ -132,4 +132,10 @@
   <data name="ViewConnctor.Text" xml:space="preserve">
     <value>新增接口类型</value>
   </data>
+  <data name="lbName.Location" xml:space="preserve">
+    <value>15,40</value>
+  </data>
+  <data name="lbName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 40</value>
+  </data>
 </root>

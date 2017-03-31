@@ -11,6 +11,13 @@ namespace CamInter
     /// </summary>
     public class SetLanguage
     {
+
+        public static string GetStringByFormKey(Type type, string key)
+        {
+            ComponentResourceManager resources = new ComponentResourceManager(type);
+            return resources.GetObject(key).ToString();
+        }
+
         /// <summary>
         /// 设置当前程序的界面语言
         /// </summary>
