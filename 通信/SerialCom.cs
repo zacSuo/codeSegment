@@ -6,7 +6,7 @@ using System.IO.Ports;
 using System.Diagnostics;
 using System.Threading;
 
-namespace SimuProteus
+namespace Core
 {
     /// <summary>
     /// 读取串口数据
@@ -28,7 +28,8 @@ namespace SimuProteus
                 _tmout = value;
             }
         }
-        public bool ReadBuffer(byte[] bt, int nCount)
+
+        public int ReadBuffer(byte[] bt, int nCount)
         {
             sw.Reset();
             sw.Start();
@@ -36,15 +37,20 @@ namespace SimuProteus
             {
                 Thread.Sleep(10);
             }
+            sw.Stop();
+            return Read(bt, 0, nCount);
+        }
 
-            if (BytesToRead < nCount)
+
+        public bool ReadBufferCount(byte[] bt, int nCount)
+        {
+            if (ReadBuffer(bt, nCount) < nCount)
             {
                 Debug.Print("Red:Read=" + BytesToRead.ToString() + ":" + nCount.ToString());
                 Debug.Print("Error Waste:" + sw.ElapsedMilliseconds.ToString());
                 return false;
             }
-            sw.Stop();
-            return nCount == Read(bt, 0, nCount);
+            return true;
         }
 
         /// <summary>
