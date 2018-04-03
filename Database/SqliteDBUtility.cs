@@ -19,6 +19,8 @@ namespace SimuProteus
         public DBUtility(bool dbEncrypt)
         {
             SQLiteHelper.SetPassWordFlag = dbEncrypt;
+            if(dbEncrypt)
+                SQLiteHelper.SetSignature = Ini.GetItemValue("sizeInfo", "appSignature");
         }
 
         /// <summary>
